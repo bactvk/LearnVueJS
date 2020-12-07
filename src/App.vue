@@ -5,7 +5,7 @@
       <Players :scorePlayer="scorePlayer" :currentScore="currentScore" :activePlayer="activePlayer"></Players>
       <Controls @handleNewGame="handleNewGame"></Controls>
       <Dices></Dices>
-      <PopupRule />
+      <PopupRule :isOpenPopup="isOpenPopup" @handleConfirm="handleConfirm" />
     </div>
   </div>
 </template>
@@ -21,6 +21,7 @@ export default {
   data(){
     return {
       isPlaying: false,
+      isOpenPopup: false,
       activePlayer: 0, // Who is current player?
       scorePlayer: [20,30],
       currentScore: 20
@@ -35,7 +36,16 @@ export default {
   methods:{
     handleNewGame(){
       // show popup
-
+      console.log("show popup");
+      this.isOpenPopup = true;
+    },
+    handleConfirm(){
+      console.log("close popup");
+      this.isPlaying = true;
+      this.isOpenPopup = false;
+      this.activePlayer = 0;
+      this.scorePlayer = [0,0];
+      this.currentScore = 0;
     }
   },
   
