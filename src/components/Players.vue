@@ -1,7 +1,7 @@
 <template>
 	<div class="wraper-player">
 		<div class="player-panel" :class="{active: activePlayer == 0}">
-			<div class="player-name">Player 1</div>
+			<div class="player-name">{{getNamePlayer(0)}}</div>
 			<div class="player-score">{{scorePlayer[0]}}</div>
 			<div class="player-current-box">
 				<div class="player-current-label">Current</div>
@@ -9,7 +9,7 @@
 			</div>
 		</div> 
 		<div class="player-panel" :class="{active: activePlayer == 1}">
-			<div class="player-name">Player 2</div>
+			<div class="player-name">{{getNamePlayer(1)}}</div>
 			<div class="player-score">{{scorePlayer[1]}}</div>
 			<div class="player-current-box">
 				<div class="player-current-label">Current</div>
@@ -34,6 +34,20 @@
 			},
 			activePlayer:{
 				default: 0
+			},
+			isWinner:{
+				default: false
+			}
+		},
+		methods:{
+			getNamePlayer(index){
+				var defaultName = 'Player '+ (index + 1);
+
+				// Nguoi hien tai, co nguoi thang cuoc
+				if(this.activePlayer == index && this.isWinner){
+					defaultName = 'Winner!';
+				}
+				return defaultName;
 			}
 		}
 	}

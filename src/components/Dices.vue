@@ -1,7 +1,8 @@
 <template>
 	<div class="wrapper-dices">
 		<div id="dice-1" class="dice">
-			<div class="spinner dice-3">
+			<div class="spinner" :class="'dice-' + dices[0]">
+                <div class="face1">1</div>
 				<div class="face2">2</div>
 				<div class="face3">3</div>
 				<div class="face4">4</div>
@@ -10,7 +11,7 @@
 			</div>
 		</div>
 		<div id="dice-2" class="dice">
-			<div class="spinner dice-6">
+			<div class="spinner" :class="'dice-' + dices[1]">
 				<div class="face1">1</div>
 				<div class="face2">2</div>
 				<div class="face3">3</div>
@@ -24,6 +25,11 @@
 <script type="text/javascript">
 	export default{
 		name:'dices',
+        props : {
+            dices :{
+                default: [1,1]
+            }
+        },
 		data(){
 			return{
 

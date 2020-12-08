@@ -2,9 +2,10 @@
   <div id="app">
     <h1>Dice Game</h1>
     <div class="wrapper clearfix">
-      <Players :scorePlayer="scorePlayer" :currentScore="currentScore" :activePlayer="activePlayer"></Players>
-      <Controls @handleNewGame="handleNewGame"></Controls>
-      <Dices></Dices>
+      <Players :scorePlayer="scorePlayer" :currentScore="currentScore" :activePlayer="activePlayer" :isWinner="isWinner">
+      </Players>
+      <Controls @handleNewGame="handleNewGame" @handleRollDice="handleRollDice" @handleHoldScore="handleHoldScore" :finalScore="finalScore" @handleChnageFinalScore="handleChnageFinalScore"></Controls>
+      <Dices :dices="dices"></Dices>
       <PopupRule :isOpenPopup="isOpenPopup" @handleConfirm="handleConfirm" />
     </div>
   </div>
@@ -23,8 +24,10 @@ export default {
       isPlaying: false,
       isOpenPopup: false,
       activePlayer: 0, // Who is current player?
-      scorePlayer: [20,30],
-      currentScore: 20
+      scorePlayer: [0,0],
+      currentScore: 0,
+      dices : [1,1],
+      finalScore : 15
     }
   },
   components: {
@@ -33,7 +36,23 @@ export default {
     Dices,
     PopupRule
   },
+  computed:{
+    isWinner(){
+      let { scorePlayer, finalScore } = this;
+      if(scorePlayer[0] >= finalScore || scorePlayer[1] >= finalScore){
+        // Dung cuoc choi
+        // this.isPlaying = false;
+        return true;
+      }
+      return false;
+    }
+  },
   methods:{
+    nextPlayer(){
+      //activePlayer = 0 -> 1
+      this.activePlayer = this.activePlayer == 0 ? 1 : 0;
+      this.currentScore = 0;
+    },
     handleNewGame(){
       // show popup
       console.log("show popup");
@@ -46,8 +65,69 @@ export default {
       this.activePlayer = 0;
       this.scorePlayer = [0,0];
       this.currentScore = 0;
+      this.dices = [1,1];
+    },
+    handleRollDice(){
+      console.log('handleRollDice');
+      if(this.isPlaying){
+        // xoay xuc sac
+        // Math.random() : 0 -> 1
+        /*
+          0 <= X <= 1
+          0*6 <= y= x*6 <= 6
+        */
+        var dice1 = Math.floor(Math.random()*6 + 1);
+        var dice2 = Math.floor(Math.random()*6 + 1);
+
+        this.dices = [dice1,dice2];
+        if(dice1 == 1 || dice2 == 1){
+          let activePlayer = this.activePlayer; 
+          setTimeout(function() {
+            alert("Mất lượt chơi. Người chơi "+ ( activePlayer + 1)+" đã quay trúng số 1.");
+          },10)
+          // Đỗi lượt chơi
+          this.nextPlayer();
+        }else{
+          // cộng dồn
+          this.currentScore += dice1 + dice2;
+        }
+
+      }else{
+        alert("Please click new Game");
+      }
+    },
+    handleHoldScore(){
+      if(this.isPlaying){
+        let {scorePlayer , activePlayer, currentScore } = this;
+        let scoreOld = scorePlayer[activePlayer];
+
+        let cloneScorePlayer = [...scorePlayer];
+        cloneScorePlayer[activePlayer] = scoreOld + currentScore;
+
+        this.scorePlayer = cloneScorePlayer;
+        
+        if(!this.isWinner){
+          this.nextPlayer();
+        }
+      }else{
+        alert("Please click new Game");
+      }
+    },
+
+    handleChnageFinalScore(e){
+      console.log(e.target.value);
     }
+
   },
+  watch:{
+    isWinner(){
+      let { scorePlayer, finalScore } = this;
+      if(scorePlayer[0] >= finalScore || scorePlayer[1] >= finalScore){
+        // Dung cuoc choi
+        this.isPlaying = false;
+      }
+    }
+  }
   
 }
 </script>
